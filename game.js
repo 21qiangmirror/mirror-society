@@ -40,28 +40,109 @@ const GameEngine = {
         `;
     },
 
-    // 检查结果并发放奖励
-    checkResult(choice, right, day) {
-        if (choice === right) {
-            const dayData = GAME_DATA.days[day - 1];
-            alert(`✨ 恭喜完成第${day}天！获得知识碎片📚 x${dayData.fragments}，资金💰 x50`);
-            
-            // 更新状态
-            Game.state.knowledge += dayData.fragments;
-            Game.state.money += 50;
-            
-            // 解锁下一天
-            if (day === Game.state.unlockedDays && day < 28) {
-                Game.state.unlockedDays++;
+    // 检查结果并发放
+
+        /**
+ * game.js 逻辑增强
+ */
+
+// 1. 设施升级逻辑
+GameEngine.upgradeFacility = function(fId) {
+    const facility = GAME_DATA.facilities.find(f => f.id === fId);
+    const currentLevel = Game.state.facilities[facility.name] || 0;
+    const cost = facility.baseCost * (currentLevel + 1);
+
+    if (Game.state.money >= cost) {
+        Game.state.money -= cost;
+        Game.state.facilities[facility.name] = currentLevel + 1;
+        
+        // 增加声望
+        Game.state.prestige += 10;
+        
+        // 检查研究所等级提升
+        this.checkInstituteLevel();
+        
+        Game.save();
+        Game.updateUI();
+        this.renderFacilities();
+        alert(`🏗️ ${facility.name} 升级成功！当前等级：Lv.${currentLevel + 1}`);
+    } else {
+        alert("💰 资金不足，快去完成任务赚取奖励吧！");
+    }
+};
+
+// 2. 检查研究所等级
+GameEngine.checkInstituteLevel = function() {
+    const totalLevels = Object.values(Game.state.facilities).reduce((a, b) => a + b, 0);
+    if (totalLevels >= 15) Game.state.level = 6;
+    else if (totalLevels >= 10) Game.state.level = 5;
+    else if (totalLevels >= 6) Game.state.level = 4;
+    else if (totalLevels >= 3) Game.state.level = 3;
+    else if (totalLevels >= 1) Game.state.level = 2;
+    
+    // 更新称号
+    const titles = ["白丁", "学徒", "研究小组", "团队", "中心", "殿堂"];
+    Game.state.title = titles[Game.state.level - 1];
+};
+
+// 3. 渲染设施页面
+GameEngine.renderFacilities = function() {
+    const container = document.getElementById('facility-list');
+    if (!container) return;
+    
+    container.innerHTML = GAME_DATA.facilities.map(f => {
+        const lvl = Game.state.facilities[f.name] || 0;
+        const cost = f.baseCost * (lvl + 1);
+        return `
+            <div class="npc-box" style="flex-direction: column; align-items: flex-start;">
+                <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                    <span style="font-size:30px;">${f.emoji}</span>
+                    <strong>${f.name} (Lv.${lvl})</strong>
+                    <button onclick="GameEngine.upgradeFacility('${f.id}')" class="btn-primary" style="margin-left:auto; font-size:12px;">
+                        升级 (💰${cost})
+                    </button>
+                </div>
+                <p style="font-size:12px; margin:5px 0 0 40px; opacity:0.8;">${f.desc}</p>
+            </div>
+        `;
+    }).join('');
+};
+
+// 4. 动态生成百科全书
+GameEngine.renderWiki = function() {
+    const container = document.getElementById('concept-list');
+    if (!container) return;
+
+    // 只有在已解锁的概念中显示的才叫“百科”
+    const unlocked = Game.state.unlockedConcepts || [];
+    if (unlocked.length === 0) {
+        container.innerHTML = "<p style='text-align:center; width:100%; opacity:0.5;'>尚未解锁任何核心概念，快去学习吧！</p>";
+        return;
+    }
+
+    container.innerHTML = unlocked.map(concept => `
+        <div style="background:white; border:2px solid #8B5A2B; border-radius:15px; padding:10px; margin:5px; width:100%;">
+            <strong style="color:#FFAA5C;"># ${concept}</strong>
+            <p style="font-size:13px; margin:5px 0 0 0;">${GAME_DATA.wiki[concept] || "定义整理中..."}</p>
+        </div>
+    `).join('');
+};
+
+// 5. 修改原有的 checkResult，加入概念解锁逻辑
+const oldCheckResult = GameEngine.checkResult;
+GameEngine.checkResult = function(choice, right, day) {
+    if (choice === right) {
+        const dayData = GAME_DATA.days[day - 1];
+        // 将当天概念加入已解锁列表
+        if (!Game.state.unlockedConcepts) Game.state.unlockedConcepts = [];
+        dayData.concepts.forEach(c => {
+            if (!Game.state.unlockedConcepts.includes(c)) {
+                Game.state.unlockedConcepts.push(c);
             }
-            
-            Game.save();
-            Game.updateUI();
-            Game.renderDayGrid();
-            document.getElementById('task-modal').remove();
-        } else {
-            alert("💔 答案有误，再温习一下内容吧！");
-        }
+        });
+    }
+    oldCheckResult.call(this, choice, right, day);
+};
     }
 };
 
