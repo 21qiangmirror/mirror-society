@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>镜中社会 - 甜品研究局 (Alpha V1.0)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --biscuit: #FFF3E0;
+            --cream: #FFFAF0;
+            --chocolate: #5D4037;
+            --strawberry: #FF80AB;
+            --mint: #A5D6A7;
+            --wood: #8D6E63;
+        }
+
+        /* 基础样式与响应式 */
+        body {
+            background-color: var(--biscuit);
+            color: var(--chocolate);
+            font-family: 'Comic Sans MS', 'cursive', "Microsoft YaHei", sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 顶部状态栏 */
+        .header-bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-bottom: 5px solid var(--chocolate);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-badge {
+            background: var(--cream);
+            padding: 5px 15px;
+            border: 2px solid var(--chocolate);
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 2px 2px 0 var(--chocolate);
+        }
+
+        /* 主容器布局 */
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        /* 模块卡片网格 */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* 饼干风格卡片 */
+        .card {
+            background: var(--cream);
+            border: 6px solid #D7CCC8;
+            border-radius: 40px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #BCAAA4;
+            transition: transform 0.1s;
+            position: relative;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+        .card:active { transform: translateY(5px); box-shadow: 0 2px 0 #BCAAA4; }
+
+        .tag {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--strawberry);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* 游戏弹窗层 */
+        #game-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .game-window {
+            background: var(--biscuit);
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 40px;
+            border: 8px solid var(--chocolate);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 20px;
+            font-size: 30px; cursor: pointer;
+        }
+
+        /* 自适应平板适配 */
+        @media (max-width: 768px) {
+            .grid-layout { grid-template-columns: 1fr; }
+            .header-bar { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <div class="stat-badge">🏅 <span id="level-display">Lv.1 饼干学徒</span></div>
+        <div class="stat-badge">🪙 糖霜币: <span id="coin-display">100</span></div>
+        <div class="stat-badge">🎓 北大进度: <span id="pku-display">0</span>%</div>
+    </div>
+
+    <div class="container">
+        <header style="text-align: center; margin-bottom: 50px;">
+            <h1 style="font-size: 2.5rem; color: var(--chocolate);">🍪 镜中社会 · 甜品研究局</h1>
+            <p>基于北京大学社会学考研大纲设计的游戏化学习空间</p>
+        </header>
+
+        <div class="grid-layout">
+            <div class="card" onclick="openGame('theory')">
+                <span class="tag">专一：理论</span>
+                <div style="font-size: 50px;">📚</div>
+                <h3>糖霜档案馆</h3>
+                <p>与马克思、韦伯饼干人喝茶论道</p>
+            </div>
+            <div class="card" onclick="openGame('method')">
+                <span class="tag">专二：方法</span>
+                <div style="font-size: 50px;">🧪</div>
+                <h3>焦糖实验室</h3>
+                <p>统计碎片连连看与研究设计</p>
+            </div>
+            <div class="card" onclick="openGame('field')">
+                <span class="tag">质性：访谈</span>
+                <div style="font-size: 50px;">🏡</div>
+                <h3>果汁情报站</h3>
+                <p>提取高纯度的访谈生活史果汁</p>
+            </div>
+            <div class="card" style="border-color: var(--chocolate);" onclick="openGame('exam')">
+                <span class="tag" style="background: var(--chocolate);">终极试炼</span>
+                <div style="font-size: 50px;">🏛️</div>
+                <h3>烘焙考核厅</h3>
+                <p>北大历年真题镜像挑战</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-overlay">
+        <div class="game-window">
+            <span class="close-btn" onclick="closeGame()">&times;</span>
+            <div id="game-content">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 数据持久化系统 ---
+        const GameData = {
+            state: JSON.parse(localStorage.getItem('mirrorSave')) || {
+                level: 1, coins: 100, pku: 0, title: "饼干学徒"
+            },
+            save() {
+                localStorage.setItem('mirrorSave', JSON.stringify(this.state));
+                this.updateUI();
+            },
+            updateUI() {
+                document.getElementById('level-display').innerText = `Lv.${this.state.level} ${this.state.title}`;
+                document.getElementById('coin-display').innerText = this.state.coins;
+                document.getElementById('pku-display').innerText = this.state.pku;
+            },
+            addReward(c, p) {
+                this.state.coins += c;
+                this.state.pku += p;
+                if(this.state.pku >= 100) this.state.title = "特级研究员";
+                this.save();
+            }
+        };
+
+        // --- 2. 交互逻辑与 GSAP 动画 ---
+        window.onload = () => {
+            GameData.updateUI();
+            gsap.from(".card", { duration: 1, y: 50, opacity: 0, stagger: 0.2, ease: "back.out" });
+        };
+
+        function openGame(type) {
+            const overlay = document.getElementById('game-overlay');
+            const content = document.getElementById('game-content');
+            overlay.style.display = 'flex';
+            
+            // 简单路由逻辑
+            if(type === 'theory') {
+                content.innerHTML = `<h3>🍪 理论下午茶</h3><p>马克思饼干问：劳动的异己化称为什么？</p>
+                <button class="choice" onclick="win(10, 5)">异化</button> <button class="choice">内卷</button>`;
+            } else if(type === 'exam') {
+                content.innerHTML = `<h3>🏛️ 烘焙考核厅</h3><p>【论述题】试述差序格局...</p><textarea style="width:100%; height:100px;"></textarea>
+                <br><button onclick="win(50, 20)">提交作品</button>`;
+            } else {
+                content.innerHTML = `<h3>🚧 施工中</h3><p>该区域正在调配果酱，敬请期待！</p>`;
+            }
+            
+            gsap.from(".game-window", { duration: 0.5, scale: 0.8, opacity: 0 });
+        }
+
+        function closeGame() {
+            document.getElementById('game-overlay').style.display = 'none';
+        }
+
+        function win(c, p) {
+            alert(`🍬 恭喜！获得糖霜币+${c}，北大进度+${p}%`);
+            GameData.addReward(c, p);
+            closeGame();
+            // 碎屑特效
+            triggerCrumbs();
+        }
+
+        function triggerCrumbs() {
+            // 简易粒子效果演示
+            console.log("粒子动画触发...");
+        }
+    </script>
+</body>
+</html>
