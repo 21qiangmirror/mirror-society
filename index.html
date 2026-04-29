@@ -235,11 +235,17 @@
                 }
             },
 
-            switchPage(pageId) {
-                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-                document.getElementById(pageId).classList.add('active');
-                gsap.from(`#${pageId}`, { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" });
-            },
+switchPage(pageId) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(pageId);
+    target.classList.add('active');
+    
+    // --- 新增：在这里触发渲染 ---
+    if (id === 'build') GameEngine.renderFacilities();
+    if (id === 'wiki') GameEngine.renderWiki();
+    
+    gsap.from(`#${pageId}`, { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" });
+},
 
             save() { localStorage.setItem('soc_res_save_v1', JSON.stringify(this.state)); },
             load() {
