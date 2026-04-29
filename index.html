@@ -16,20 +16,16 @@
             --lavender: #C8A2C8;
             --soft-white: #FFFFFF;
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
         body {
             background-color: var(--cream-yellow);
             background-image: radial-gradient(var(--lemon-yellow) 1px, transparent 1px);
-            background-size: 20px 20px; /* 糖粉背景 */
+            background-size: 20px 20px;
             color: var(--caramel-brown);
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
             margin: 0; padding: 0;
             overflow-x: hidden;
         }
-
-        /* 顶部资源条 */
         .status-bar {
             background: var(--soft-white);
             padding: 12px 15px;
@@ -37,88 +33,47 @@
             justify-content: space-around;
             border-bottom: 5px solid var(--caramel-brown);
             position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-
-        .resource-item {
-            font-size: 15px; font-weight: bold;
-            display: flex; align-items: center; gap: 5px;
-        }
-
-        /* 主容器 */
-        #app {
-            padding: 20px;
-            padding-bottom: 100px;
-            max-width: 600px; margin: 0 auto;
-        }
-
-        /* 角色对话框 */
+        .resource-item { font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        #app { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: 0 auto; }
         .npc-box {
             background: var(--soft-white);
             border: 4px solid var(--caramel-brown);
             border-radius: 25px;
-            padding: 15px;
-            margin: 10px 0 25px 0;
-            display: flex; align-items: center;
-            gap: 15px;
+            padding: 15px; margin: 10px 0 25px 0;
+            display: flex; align-items: center; gap: 15px;
             box-shadow: 0 6px 0 var(--caramel-brown);
         }
-
         .npc-avatar {
             font-size: 40px; background: var(--lemon-yellow);
             width: 70px; height: 70px; min-width: 70px;
             display: flex; align-items: center; justify-content: center;
             border-radius: 50%; border: 3px solid var(--caramel-brown);
         }
-
-        /* 底部导航栏 */
         .nav-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--soft-white);
-            height: 75px;
+            background: var(--soft-white); height: 75px;
             display: flex; justify-content: space-around; align-items: center;
-            border-top: 5px solid var(--caramel-brown);
-            z-index: 1000;
+            border-top: 5px solid var(--caramel-brown); z-index: 1000;
         }
-
-        .nav-item {
-            text-align: center; font-size: 12px; cursor: pointer;
-            transition: transform 0.2s; color: var(--caramel-brown);
-            font-weight: bold;
-        }
-        .nav-item:active { transform: scale(0.9); }
+        .nav-item { text-align: center; font-size: 12px; cursor: pointer; font-weight: bold; }
         .nav-icon { font-size: 26px; display: block; margin-bottom: 2px; }
-
-        /* 页面切换逻辑 */
         .page-section { display: none; }
         .page-section.active { display: block; }
-
-        /* 任务网格 */
         .day-box {
             aspect-ratio: 1/1; border: 4px solid var(--caramel-brown);
             border-radius: 18px; display: flex; align-items: center;
             justify-content: center; font-size: 20px; font-weight: 900;
-            cursor: pointer; position: relative;
-            box-shadow: 0 4px 0 var(--caramel-brown);
+            cursor: pointer; box-shadow: 0 4px 0 var(--caramel-brown);
             transition: all 0.2s;
         }
         .day-box:active { transform: translateY(4px); box-shadow: none; }
-
-        /* 按钮通用样式 */
         .btn-primary {
-            background: var(--lemon-yellow);
-            border: 3px solid var(--caramel-brown);
-            padding: 12px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 5px 0 var(--caramel-brown);
-            transition: all 0.1s;
+            background: var(--lemon-yellow); border: 3px solid var(--caramel-brown);
+            padding: 12px 20px; border-radius: 20px; font-weight: bold;
+            box-shadow: 0 5px 0 var(--caramel-brown); cursor: pointer;
         }
-        .btn-primary:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--caramel-brown); }
-
-        h2 { text-align: center; margin-bottom: 20px; font-size: 24px; }
+        h2 { text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -139,22 +94,17 @@
                     <p id="npc-text" style="margin: 5px 0 0 0; font-size: 14px;">加载中...</p>
                 </div>
             </div>
-            
-            <div id="day-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-                </div>
+            <div id="day-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;"></div>
         </section>
 
         <section id="wiki" class="page-section">
             <h2>📖 社会学百科</h2>
-            <div id="concept-list" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                <p style="opacity: 0.6;">完成任务来解锁核心概念...</p>
-            </div>
+            <div id="concept-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </section>
 
         <section id="build" class="page-section">
             <h2>🏛️ 研究所设施</h2>
-            <div id="facility-list">
-                </div>
+            <div id="facility-list"></div>
         </section>
 
         <section id="achieve" class="page-section">
@@ -171,23 +121,22 @@
     </nav>
 
     <script>
-        // 1. 初始化游戏基础对象
         const Game = {
             state: {
                 money: 1000,
                 knowledge: 0,
                 prestige: 0,
                 level: 1,
-                currentDay: 1,
                 unlockedDays: 1,
                 title: "学徒",
-                completedTasks: []
+                completedTasks: [],
+                unlockedConcepts: [],
+                facilities: {}
             },
 
             init() {
                 this.load();
                 this.updateUI();
-                // 延迟执行渲染，确保 data.js 已加载
                 setTimeout(() => {
                     this.renderDayGrid();
                     this.initNPC();
@@ -219,45 +168,36 @@
                     box.className = 'day-box';
                     const isUnlocked = i <= this.state.unlockedDays;
                     const isCompleted = this.state.completedTasks.includes(i);
-                    
                     box.style.backgroundColor = isCompleted ? 'var(--mint-green)' : (isUnlocked ? 'var(--lemon-yellow)' : '#E0E0E0');
                     box.style.opacity = isUnlocked ? '1' : '0.5';
                     box.innerText = i;
-                    
                     box.onclick = () => {
-                        if(typeof GameEngine !== 'undefined') {
-                            GameEngine.initTask(i);
-                        } else {
-                            alert("游戏引擎加载中，请稍后...");
-                        }
+                        if(typeof GameEngine !== 'undefined') GameEngine.initTask(i);
                     };
                     grid.appendChild(box);
                 }
             },
 
-switchPage(pageId) {
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(pageId);
-    target.classList.add('active');
-    
-    // --- 新增：在这里触发渲染 ---
-    if (id === 'build') GameEngine.renderFacilities();
-    if (id === 'wiki') GameEngine.renderWiki();
-    
-    gsap.from(`#${pageId}`, { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" });
-},
+            switchPage(pageId) {
+                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+                const target = document.getElementById(pageId);
+                if(target) target.classList.add('active');
+                
+                // 刷新特定页面内容
+                if (pageId === 'build' && typeof GameEngine !== 'undefined') GameEngine.renderFacilities();
+                if (pageId === 'wiki' && typeof GameEngine !== 'undefined') GameEngine.renderWiki();
+                
+                gsap.from(`#${pageId}`, { y: 20, opacity: 0, duration: 0.4 });
+            },
 
-            save() { localStorage.setItem('soc_res_save_v1', JSON.stringify(this.state)); },
+            save() { localStorage.setItem('soc_res_save_v2', JSON.stringify(this.state)); },
             load() {
-                const saved = localStorage.getItem('soc_res_save_v1');
+                const saved = localStorage.getItem('soc_res_save_v2');
                 if(saved) this.state = Object.assign(this.state, JSON.parse(saved));
             }
         };
 
-        // 全局导航绑定
         window.switchPage = (id) => Game.switchPage(id);
-
-        // 启动！
         window.addEventListener('DOMContentLoaded', () => Game.init());
     </script>
 
